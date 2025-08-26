@@ -2,6 +2,7 @@ import React, { useState, createContext, ReactNode, useEffect } from "react";
 import { api } from "../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
+import axios from "axios";
 
 type AuthContextData = {
     user: UserProps;
@@ -145,7 +146,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
             setProfissional(profissionalData);
             setMotorista(motoristaData);
         } catch (error) {
-            console.log("Erro no login:", error);
+            if (axios.isAxiosError(error) && error.response) {
+                console.log("Erro da API:", error.response.data);
+            }
+            console.log(error);
+            // console.log("Erro no login:", error);
             Toast.show({
                 text1: "Login ou senha incorretos.",
                 type: "error"

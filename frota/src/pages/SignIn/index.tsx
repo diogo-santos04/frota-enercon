@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef, useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, StatusBar, Animated, Dimensions, KeyboardAvoidingView, Platform, ScrollView, ViewStyle } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, StatusBar, Animated, Dimensions, KeyboardAvoidingView, Platform, ScrollView, Image } from "react-native";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Feather, MaterialIcons, FontAwesome5, MaterialCommunityIcons, FontAwesome6 } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -18,8 +18,7 @@ export default function SignIn() {
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(50)).current;
     const scaleAnim = useRef(new Animated.Value(0.8)).current;
-    const logoRotate = useRef(new Animated.Value(0)).current;
-
+    const logoScale = useRef(new Animated.Value(0.8)).current;
 
     useEffect(() => {
         Animated.parallel([
@@ -39,16 +38,13 @@ export default function SignIn() {
                 friction: 7,
                 useNativeDriver: true,
             }),
-        ]).start();
-
-        Animated.loop(
-            Animated.timing(logoRotate, {
+            Animated.spring(logoScale, {
                 toValue: 1,
-                duration: 10000,
+                tension: 60,
+                friction: 8,
                 useNativeDriver: true,
-            })
-        ).start();
-
+            }),
+        ]).start();
     }, []);
 
     async function handleLogin() {
@@ -70,18 +66,22 @@ export default function SignIn() {
         await signIn({ email, password });
     }
 
-    const logoRotateInterpolate = logoRotate.interpolate({
-        inputRange: [0, 1],
-        outputRange: ["0deg", "360deg"],
-    });
-
     return (
         <>
-            <StatusBar backgroundColor="#0B7EC8" barStyle="light-content" />
-            <LinearGradient colors={["#0B7EC8", "#1976D2", "#0D47A1", "#1A237E"]} style={styles.container} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
-             
+            <StatusBar backgroundColor="#1B1B1B" barStyle="light-content" />
+            <LinearGradient 
+                colors={["#1B1B1B", "#2A2A2A", "#1A365D", "#2D3748"]} 
+                style={styles.container} 
+                start={{ x: 0, y: 0 }} 
+                end={{ x: 1, y: 1 }}
+            >
                 <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.keyboardView}>
                     <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+                        
+                        {/* Decorative Elements */}
+                        <View style={[styles.decorativeCircle, { top: height * 0.1, right: width * 0.1 }]} />
+                        <View style={[styles.decorativeCircle, { bottom: height * 0.2, left: width * 0.05, opacity: 0.3 }]} />
+                        
                         <Animated.View
                             style={[
                                 styles.inputContainer,
@@ -91,76 +91,103 @@ export default function SignIn() {
                                 },
                             ]}
                         >
-                            <LinearGradient colors={["rgba(255, 255, 255, 0.95)", "rgba(255, 255, 255, 0.9)"]} style={styles.cardGradient}>
+                            <LinearGradient 
+                                colors={["rgba(255, 255, 255, 0.98)", "rgba(248, 250, 252, 0.95)"]} 
+                                style={styles.cardGradient}
+                            >
                                 <View style={styles.headerContainer}>
                                     <Animated.View
                                         style={[
                                             styles.logoContainer,
                                             {
-                                                transform: [{ rotate: logoRotateInterpolate }],
+                                                transform: [{ scale: logoScale }],
                                             },
                                         ]}
                                     >
-                                        <LinearGradient colors={["#0B7EC8", "#1976D2"]} style={styles.logoGradient}>
-                                            <FontAwesome6 name="car" size={24} color="#FFFFFF" />
-                                        </LinearGradient>
+                                        <View style={styles.logoBackground}>
+                                            <Image 
+                                                source={require('../../../assets/enercon-icon.png')} 
+                                                style={styles.logoImage}
+                                                resizeMode="contain"
+                                            />
+                                        </View>
                                     </Animated.View>
 
                                     <Text style={styles.title}>FROTA</Text>
-                                    <Text style={styles.subtitle}>Sistema de Gerenciamento de Frota</Text>
+                                    <Text style={styles.subtitle}>Enercon - Energia e Assessoria</Text>
                                     <View style={styles.titleUnderline} />
                                 </View>
 
                                 <View style={styles.formContainer}>
                                     <View style={styles.fieldContainer}>
                                         <Text style={styles.label}>
-                                            <MaterialIcons name="email" size={16} color="#666" /> Email
+                                            <MaterialIcons name="email" size={16} color="#4A5568" /> Email
                                         </Text>
                                         <View style={[styles.inputWrapper, emailFocused && styles.inputWrapperFocused]}>
-                                            <LinearGradient colors={emailFocused ? ["#E3F2FD", "#BBDEFB"] : ["#F8F9FA", "#F1F3F4"]} style={styles.inputGradient}>
-                                                <MaterialIcons name="email" size={20} color={emailFocused ? "#0B7EC8" : "#999"} style={styles.inputIcon} />
+                                            <View style={[
+                                                styles.inputGradient,
+                                                { backgroundColor: emailFocused ? '#FFF5E6' : '#F7FAFC' }
+                                            ]}>
+                                                <MaterialIcons 
+                                                    name="email" 
+                                                    size={20} 
+                                                    color={emailFocused ? "#FF8C00" : "#718096"} 
+                                                    style={styles.inputIcon} 
+                                                />
                                                 <TextInput
                                                     placeholder="Seu email registrado"
                                                     autoCapitalize="none"
                                                     style={[styles.input, emailFocused && styles.inputFocused]}
-                                                    placeholderTextColor="#999"
+                                                    placeholderTextColor="#A0AEC0"
                                                     value={email}
                                                     onChangeText={setEmail}
                                                     onFocus={() => setEmailFocused(true)}
                                                     onBlur={() => setEmailFocused(false)}
                                                     keyboardType="email-address"
                                                 />
-                                            </LinearGradient>
+                                            </View>
                                         </View>
                                     </View>
 
                                     <View style={styles.fieldContainer}>
                                         <Text style={styles.label}>
-                                            <MaterialIcons name="lock" size={16} color="#666" /> Senha
+                                            <MaterialIcons name="lock" size={16} color="#4A5568" /> Senha
                                         </Text>
                                         <View style={[styles.inputWrapper, passwordFocused && styles.inputWrapperFocused]}>
-                                            <LinearGradient colors={passwordFocused ? ["#E3F2FD", "#BBDEFB"] : ["#F8F9FA", "#F1F3F4"]} style={styles.inputGradient}>
-                                                <MaterialIcons name="lock" size={20} color={passwordFocused ? "#0B7EC8" : "#999"} style={styles.inputIcon} />
+                                            <View style={[
+                                                styles.inputGradient,
+                                                { backgroundColor: passwordFocused ? '#FFF5E6' : '#F7FAFC' }
+                                            ]}>
+                                                <MaterialIcons 
+                                                    name="lock" 
+                                                    size={20} 
+                                                    color={passwordFocused ? "#FF8C00" : "#718096"} 
+                                                    style={styles.inputIcon} 
+                                                />
                                                 <TextInput
                                                     placeholder="Sua senha"
                                                     style={[styles.input, passwordFocused && styles.inputFocused]}
                                                     secureTextEntry={!showPassword}
-                                                    placeholderTextColor="#999"
+                                                    placeholderTextColor="#A0AEC0"
                                                     value={password}
                                                     onChangeText={setPassword}
                                                     onFocus={() => setPasswordFocused(true)}
                                                     onBlur={() => setPasswordFocused(false)}
                                                 />
                                                 <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-                                                    <MaterialIcons name={showPassword ? "visibility" : "visibility-off"} size={20} color={passwordFocused ? "#0B7EC8" : "#999"} />
+                                                    <MaterialIcons 
+                                                        name={showPassword ? "visibility" : "visibility-off"} 
+                                                        size={20} 
+                                                        color={passwordFocused ? "#FF8C00" : "#718096"} 
+                                                    />
                                                 </TouchableOpacity>
-                                            </LinearGradient>
+                                            </View>
                                         </View>
                                     </View>
 
                                     <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={loadingAuth}>
                                         <LinearGradient
-                                            colors={loadingAuth ? ["#B0BEC5", "#90A4AE"] : ["#0B7EC8", "#1976D2", "#0D47A1"]}
+                                            colors={loadingAuth ? ["#A0AEC0", "#718096"] : ["#FF8C00", "#FF7300", "#E65100"]}
                                             style={styles.buttonGradient}
                                             start={{ x: 0, y: 0 }}
                                             end={{ x: 1, y: 0 }}
@@ -189,7 +216,8 @@ export default function SignIn() {
                             ]}
                         >
                             <View style={styles.footerContent}>
-                                <Text style={styles.footerText}>2025 FROTA - Sistema de Gerenciamento de Frota</Text>
+                                <View style={styles.footerDivider} />
+                                <Text style={styles.footerText}>2025 ENERCON - Energia e Assessoria LTDA</Text>
                             </View>
                         </Animated.View>
                     </ScrollView>
@@ -214,64 +242,75 @@ const styles = StyleSheet.create({
         paddingVertical: 40,
         minHeight: height,
     },
-    floatingElement: {
+    decorativeCircle: {
         position: "absolute",
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        backgroundColor: "rgba(255, 140, 0, 0.1)",
+        opacity: 0.6,
     },
     inputContainer: {
         width: "100%",
         maxWidth: 400,
-        borderRadius: 25,
+        borderRadius: 20,
         shadowColor: "#000",
-        shadowOffset: { width: 0, height: 15 },
-        shadowOpacity: 0.25,
-        shadowRadius: 25,
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 0.3,
+        shadowRadius: 20,
         elevation: 15,
     },
     cardGradient: {
-        borderRadius: 25,
-        paddingVertical: 40,
+        borderRadius: 20,
+        paddingVertical: 35,
         paddingHorizontal: 30,
+        borderWidth: 1,
+        borderColor: "rgba(255, 140, 0, 0.1)",
     },
     headerContainer: {
         alignItems: "center",
-        marginBottom: 40,
+        marginBottom: 35,
     },
     logoContainer: {
         marginBottom: 20,
-        shadowColor: "#0B7EC8",
+        shadowColor: "#FF8C00",
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
         elevation: 8,
     },
-    logoGradient: {
-        width: 70,
-        height: 70,
-        borderRadius: 35,
+    logoBackground: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        backgroundColor: "#FFFFFF",
         justifyContent: "center",
         alignItems: "center",
+        borderWidth: 2,
+        borderColor: "#FF8C00",
+    },
+    logoImage: {
+        width: 60,
+        height: 60,
     },
     title: {
-        fontSize: 32,
+        fontSize: 28,
         fontWeight: "800",
-        color: "#1A1A1A",
-        marginBottom: 8,
+        color: "#1A202C",
+        marginBottom: 5,
         letterSpacing: 2,
     },
     subtitle: {
         fontSize: 14,
-        color: "#666",
+        color: "#4A5568",
         textAlign: "center",
-        marginBottom: 10,
+        marginBottom: 15,
+        fontWeight: "500",
     },
     titleUnderline: {
-        width: 60,
+        width: 50,
         height: 3,
-        backgroundColor: "#0B7EC8",
+        backgroundColor: "#FF8C00",
         borderRadius: 2,
     },
     formContainer: {
@@ -284,30 +323,32 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 14,
         fontWeight: "600",
-        color: "#333",
-        marginBottom: 10,
+        color: "#2D3748",
+        marginBottom: 8,
         flexDirection: "row",
         alignItems: "center",
     },
     inputWrapper: {
-        borderRadius: 15,
+        borderRadius: 12,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
-        shadowRadius: 6,
-        elevation: 4,
+        shadowRadius: 4,
+        elevation: 3,
     },
     inputWrapperFocused: {
-        shadowColor: "#0B7EC8",
-        shadowOpacity: 0.3,
-        elevation: 8,
+        shadowColor: "#FF8C00",
+        shadowOpacity: 0.25,
+        elevation: 6,
     },
     inputGradient: {
         flexDirection: "row",
         alignItems: "center",
-        borderRadius: 15,
+        borderRadius: 12,
         paddingHorizontal: 15,
-        minHeight: 55,
+        minHeight: 52,
+        borderWidth: 1,
+        borderColor: "#E2E8F0",
     },
     inputIcon: {
         marginRight: 12,
@@ -315,69 +356,63 @@ const styles = StyleSheet.create({
     input: {
         flex: 1,
         fontSize: 16,
-        color: "#000",
+        color: "#2D3748",
         paddingVertical: 0,
     },
     inputFocused: {
-        color: "#0B7EC8",
+        color: "#1A202C",
     },
     eyeIcon: {
-        padding: 5,
-        marginLeft: 10,
-    },
-    forgotPasswordContainer: {
-        alignSelf: "flex-end",
-        marginTop: 5,
-    },
-    forgotPasswordText: {
-        fontSize: 14,
-        color: "#0B7EC8",
-        fontWeight: "600",
-        flexDirection: "row",
-        alignItems: "center",
+        padding: 8,
+        marginLeft: 5,
     },
     button: {
         width: "100%",
-        borderRadius: 15,
-        shadowColor: "#0B7EC8",
-        shadowOffset: { width: 0, height: 6 },
-        shadowOpacity: 0.4,
-        shadowRadius: 10,
-        elevation: 8,
+        borderRadius: 12,
+        shadowColor: "#FF8C00",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 6,
         marginTop: 10,
     },
     buttonGradient: {
-        height: 55,
-        borderRadius: 15,
+        height: 52,
+        borderRadius: 12,
         justifyContent: "center",
         alignItems: "center",
     },
     buttonContent: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 10,
+        gap: 8,
     },
     buttonText: {
         fontSize: 16,
         fontWeight: "700",
         color: "white",
         textTransform: "uppercase",
-        letterSpacing: 1,
+        letterSpacing: 0.5,
     },
     footerContainer: {
         marginTop: 30,
         paddingHorizontal: 20,
     },
     footerContent: {
-        flexDirection: "row",
         alignItems: "center",
-        justifyContent: "center",
-        gap: 8,
+        gap: 10,
+    },
+    footerDivider: {
+        width: 60,
+        height: 2,
+        backgroundColor: "rgba(255, 140, 0, 0.5)",
+        borderRadius: 1,
     },
     footerText: {
         fontSize: 12,
         color: "rgba(255, 255, 255, 0.8)",
         textAlign: "center",
         fontWeight: "500",
+        letterSpacing: 0.5,
     },
 });

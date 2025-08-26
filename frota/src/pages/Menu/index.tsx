@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, StatusBar, SafeAreaView, Alert, Animated, Dimensions, ScrollView } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, StatusBar, SafeAreaView, Alert, Animated, Dimensions, ScrollView, Image } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Feather, MaterialIcons, FontAwesome5, MaterialCommunityIcons, FontAwesome6 } from "@expo/vector-icons";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -74,9 +74,9 @@ const Menu = () => {
             title: "Registrar\nViagem",
             icon: "add-road",
             iconType: "MaterialIcons",
-            color: "#2196F3",
-            backgroundColor: "#E3F2FD",
-            gradientColors: ["#E3F2FD", "#BBDEFB"],
+            color: "#FF8C00",
+            backgroundColor: "#2A2D3A",
+            gradientColors: ["#2A2D3A", "#1F2937"],
             onPress: () => navigation.navigate("RegistrarViagem"),
         },
         {
@@ -84,9 +84,9 @@ const Menu = () => {
             title: "Viagem em\nAndamento",
             icon: "directions-car",
             iconType: "MaterialIcons",
-            color: "#4CAF50",
-            backgroundColor: "#E8F5E8",
-            gradientColors: ["#E8F5E8", "#C8E6C9"],
+            color: "#FF8C00",
+            backgroundColor: "#2A2D3A",
+            gradientColors: ["#2A2D3A", "#1F2937"],
             onPress: () => navigation.navigate("ViagensEmAndamento"),
         },
         {
@@ -94,9 +94,9 @@ const Menu = () => {
             title: "Registrar\nAbastecimento",
             icon: "local-gas-station",
             iconType: "MaterialIcons",
-            color: "#FF9800",
-            backgroundColor: "#FFF3E0",
-            gradientColors: ["#FFF3E0", "#FFE0B2"],
+            color: "#FF8C00",
+            backgroundColor: "#2A2D3A",
+            gradientColors: ["#2A2D3A", "#1F2937"],
             onPress: () => navigation.navigate("RegistrarAbastecimento"),
         },
         {
@@ -104,9 +104,9 @@ const Menu = () => {
             title: "Realizar\nVistoria",
             icon: "car-repair",
             iconType: "MaterialIcons",
-            color: "#F44336",
-            backgroundColor: "#FFEBEE",
-            gradientColors: ["#FFEBEE", "#FFCDD2"],
+            color: "#FF8C00",
+            backgroundColor: "#2A2D3A",
+            gradientColors: ["#2A2D3A", "#1F2937"],
             onPress: () => navigation.navigate("RegistrarVistoria"),
         },
         {
@@ -114,19 +114,19 @@ const Menu = () => {
             title: "Histórico",
             icon: "history",
             iconType: "MaterialIcons",
-            color: "#9C27B0",
-            backgroundColor: "#F3E5F5",
-            gradientColors: ["#F3E5F5", "#E1BEE7"],
+            color: "#FF8C00",
+            backgroundColor: "#2A2D3A",
+            gradientColors: ["#2A2D3A", "#1F2937"],
             onPress: () => navigation.navigate("Historico"),
         },
         {
             id: 6,
-            title: "Solicitar Manutenção",
+            title: "Solicitar\nManutenção",
             icon: "car-wrench",
             iconType: "MaterialCommunityIcons",
-            color: "#2196F3",
-            backgroundColor: "#E3F2FD",
-            gradientColors: ["#E3F2FD", "#BBDEFB"],
+            color: "#FF8C00",
+            backgroundColor: "#2A2D3A",
+            gradientColors: ["#2A2D3A", "#1F2937"],
             onPress: () => navigation.navigate("RegistrarManutencao"),
         },
     ];
@@ -181,10 +181,17 @@ const Menu = () => {
             >
                 <TouchableOpacity style={styles.card} onPress={item.onPress} onPressIn={handlePressIn} onPressOut={handlePressOut} activeOpacity={0.9}>
                     <LinearGradient colors={item.gradientColors} style={styles.cardGradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
-                        <View style={[styles.iconContainer, { backgroundColor: item.color + "20" }]}>
-                            <IconComponent name={item.icon} size={32} color={item.color} />
+                        <View style={styles.iconContainer}>
+                            <LinearGradient 
+                                colors={["#FF8C00", "#FFB347"]} 
+                                style={styles.iconBackground}
+                                start={{ x: 0, y: 0 }} 
+                                end={{ x: 1, y: 1 }}
+                            >
+                                <IconComponent name={item.icon} size={24} color="#FFFFFF" />
+                            </LinearGradient>
                         </View>
-                        <Text style={[styles.cardText, { color: item.color }]}>{item.title}</Text>
+                        <Text style={styles.cardText}>{item.title}</Text>
                     </LinearGradient>
                 </TouchableOpacity>
             </Animated.View>
@@ -193,9 +200,14 @@ const Menu = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar backgroundColor="#0B7EC8" barStyle="light-content" />
+            <StatusBar backgroundColor="#1B1B1B" barStyle="light-content" />
 
-            <LinearGradient colors={["#0B7EC8", "#1976D2", "#0D47A1"]} style={styles.header} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+            <LinearGradient 
+                colors={["#1B1B1B", "#2A2A2A", "#1A365D"]} 
+                style={styles.header} 
+                start={{ x: 0, y: 0 }} 
+                end={{ x: 1, y: 1 }}
+            >
                 <Animated.View
                     style={[
                         styles.headerContent,
@@ -207,7 +219,15 @@ const Menu = () => {
                 >
                     <View style={styles.headerTop}>
                         <View style={styles.logoContainer}>
-                            <Text style={styles.logoText}>FROTA</Text>
+                            <View style={styles.logoImageContainer}>
+                                <Image 
+                                    source={require('../../../assets/enercon-icon.png')} 
+                                    style={styles.logoImage}
+                                    resizeMode="contain"
+                                />
+                            </View>
+                            <Text style={styles.logoText}>Frota</Text>
+                            <Text style={styles.logoSubtext}>Enercon - Energia e Assessoria</Text>
                             <View style={styles.logoUnderline} />
                         </View>
                     </View>
@@ -215,18 +235,18 @@ const Menu = () => {
                     <View style={styles.userInfo}>
                         <View style={styles.userAvatar}>
                             <LinearGradient colors={["#FFFFFF", "#F5F5F5"]} style={styles.avatarGradient}>
-                                <Icon name="person" size={36} color="#0B7EC8" />
+                                <Icon name="person" size={36} color="#1A365D" />
                             </LinearGradient>
                         </View>
                         <View style={styles.userDetails}>
                             <Text style={styles.userName}>{user.nome}</Text>
                             <View style={styles.userRoleContainer}>
-                                <Icon name="local-shipping" size={16} color="#E3F2FD" />
+                                <Icon name="local-shipping" size={16} color="#FFB347" />
                                 <Text style={styles.userRole}>MOTORISTA</Text>
                             </View>
                         </View>
                         <TouchableOpacity style={styles.logoutButton} onPress={signOut}>
-                            <LinearGradient colors={["#FF5722", "#D84315"]} style={styles.logoutGradient}>
+                            <LinearGradient colors={["#FF6B35", "#E55100"]} style={styles.logoutGradient}>
                                 <Icon name="logout" size={18} color="#FFFFFF" />
                                 <Text style={styles.logoutText}>SAIR</Text>
                             </LinearGradient>
@@ -234,7 +254,7 @@ const Menu = () => {
                     </View>
 
                     <View style={styles.userIdContainer}>
-                        <Icon name="badge" size={18} color="white" />
+                        <Icon name="badge" size={18} color="#FF8C00" />
                         <Text style={styles.userIdLabel}>MATRÍCULA</Text>
                         <Text style={styles.userId}>{profissional.matricula}</Text>
                     </View>
@@ -270,7 +290,7 @@ const Menu = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#F8F9FA",
+        backgroundColor: "#F1F2F6",
     },
     header: {
         paddingTop: 20,
@@ -293,17 +313,38 @@ const styles = StyleSheet.create({
     logoContainer: {
         alignItems: "center",
     },
+    logoImageContainer: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: "#FFFFFF",
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: 12,
+        borderWidth: 2,
+        borderColor: "#FF8C00",
+    },
+    logoImage: {
+        width: 45,
+        height: 45,
+    },
     logoText: {
-        fontSize: 28,
+        fontSize: 24,
         fontWeight: "bold",
         color: "#FFFFFF",
-        letterSpacing: 3,
+        letterSpacing: 2,
+        marginBottom: 4,
+    },
+    logoSubtext: {
+        fontSize: 12,
+        color: "#E2E8F0",
+        marginBottom: 8,
+        fontWeight: "500",
     },
     logoUnderline: {
-        width: 60,
+        width: 50,
         height: 3,
-        backgroundColor: "#FFFFFF",
-        marginTop: 5,
+        backgroundColor: "#FF8C00",
         borderRadius: 2,
     },
     userInfo: {
@@ -342,7 +383,7 @@ const styles = StyleSheet.create({
     },
     userRole: {
         fontSize: 14,
-        color: "#E3F2FD",
+        color: "#FFB347",
         fontWeight: "500",
     },
     logoutButton: {
@@ -370,18 +411,20 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         gap: 8,
-        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        backgroundColor: "rgba(255, 140, 0, 0.15)",
         paddingHorizontal: 15,
         paddingVertical: 10,
         borderRadius: 15,
+        borderWidth: 1,
+        borderColor: "rgba(255, 140, 0, 0.3)",
     },
     userIdLabel: {
-        color: "#E3F2FD",
+        color: "#E2E8F0",
         fontSize: 12,
         fontWeight: "500",
     },
     userId: {
-        color: "#FFFFFF",
+        color: "#FF8C00",
         fontSize: 14,
         fontWeight: "bold",
         marginLeft: "auto",
@@ -402,12 +445,12 @@ const styles = StyleSheet.create({
     welcomeText: {
         fontSize: 24,
         fontWeight: "bold",
-        color: "#2C3E50",
+        color: "#1A202C",
         marginBottom: 5,
     },
     welcomeSubtext: {
         fontSize: 16,
-        color: "#7F8C8D",
+        color: "#4A5568",
     },
     gridContainer: {
         flexDirection: "row",
@@ -419,33 +462,44 @@ const styles = StyleSheet.create({
         width: (width - 55) / 2,
     },
     card: {
-        borderRadius: 20,
-        elevation: 6,
+        borderRadius: 16,
+        elevation: 4,
         shadowColor: "#000",
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.15,
-        shadowRadius: 8,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 6,
     },
     cardGradient: {
         padding: 20,
-        borderRadius: 20,
+        borderRadius: 16,
         alignItems: "center",
         justifyContent: "center",
         minHeight: 120,
-        gap: 12,
+        gap: 15,
+        borderWidth: 1,
+        borderColor: "rgba(255, 140, 0, 0.1)",
     },
     iconContainer: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
+        marginBottom: 5,
+    },
+    iconBackground: {
+        width: 50,
+        height: 50,
+        borderRadius: 12,
         justifyContent: "center",
         alignItems: "center",
+        shadowColor: "#FF8C00",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 3,
     },
     cardText: {
-        fontSize: 14,
-        fontWeight: "bold",
+        fontSize: 13,
+        fontWeight: "600",
         textAlign: "center",
-        lineHeight: 18,
+        lineHeight: 16,
+        color: "#E2E8F0",
     },
 });
 
