@@ -121,7 +121,7 @@ const Menu = () => {
         },
         {
             id: 6,
-            title: "Solicitar\nManutenção",
+            title: "Solicitar Manutenção",
             icon: "car-wrench",
             iconType: "MaterialCommunityIcons",
             color: "#FF8C00",
@@ -203,7 +203,7 @@ const Menu = () => {
             <StatusBar backgroundColor="#1B1B1B" barStyle="light-content" />
 
             <LinearGradient 
-                colors={["#1B1B1B", "#2A2A2A", "#1A365D"]} 
+                colors={["#1B1B1B", "#1B1B1B"]} 
                 style={styles.header} 
                 start={{ x: 0, y: 0 }} 
                 end={{ x: 1, y: 1 }}
@@ -226,7 +226,7 @@ const Menu = () => {
                                     resizeMode="contain"
                                 />
                             </View>
-                            <Text style={styles.logoText}>Frota</Text>
+                            <Text style={styles.logoText}>FROTA</Text>
                             <Text style={styles.logoSubtext}>Enercon - Energia e Assessoria</Text>
                             <View style={styles.logoUnderline} />
                         </View>
@@ -320,7 +320,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         justifyContent: "center",
         alignItems: "center",
-        marginBottom: 12,
+        marginBottom: 10,
+        marginTop: 15,
         borderWidth: 2,
         borderColor: "#FF8C00",
     },

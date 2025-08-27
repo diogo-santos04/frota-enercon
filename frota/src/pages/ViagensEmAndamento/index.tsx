@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import { View, Text, StyleSheet, SafeAreaView, FlatList, TouchableOpacity, StatusBar, ActivityIndicator } from "react-native";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { View, Text, StyleSheet, SafeAreaView, FlatList, TouchableOpacity, StatusBar, ActivityIndicator, Animated, Image } from "react-native";
 import { Feather, MaterialIcons, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import { api } from "../../services/api";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -7,6 +7,7 @@ import { StackParamsList } from "../../routes/app.routes";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from "./styles";
 import { AuthContext } from "../../contexts/AuthContext";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface Profissional {
     user_id: number;
@@ -56,6 +57,10 @@ export default function ViagensEmAndamento() {
     const [loading, setLoading] = useState(true);
     const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>();
 
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const slideAnim = useRef(new Animated.Value(50)).current;
+    const scaleAnim = useRef(new Animated.Value(0.9)).current;
+
     async function getViagens() {
         try {
             setLoading(true);
@@ -76,7 +81,27 @@ export default function ViagensEmAndamento() {
         getViagens();
     }, []);
 
-   const formatarDataHora = (dataISO: string): string => {
+    useEffect(() => {
+        Animated.parallel([
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 1000,
+                useNativeDriver: true,
+            }),
+            Animated.timing(slideAnim, {
+                toValue: 0,
+                duration: 1000,
+                useNativeDriver: true,
+            }),
+            Animated.timing(scaleAnim, {
+                toValue: 1,
+                duration: 1000,
+                useNativeDriver: true,
+            }),
+        ]).start();
+    }, []);
+
+    const formatarDataHora = (dataISO: string): string => {
         const [datePart, timePart] = dataISO.split(" ");
         const [ano, mes, dia] = datePart.split("-");
         const [hora, minuto] = timePart ? timePart.split(":") : ["00", "00"];
@@ -84,13 +109,12 @@ export default function ViagensEmAndamento() {
     };
 
     const renderItem = ({ item }: { item: Viagem }) => {
-
         return (
             <View style={styles.viagemCard}>
                 <View style={styles.cardGradient}>
                     <View style={styles.viagemHeader}>
                         <View style={styles.routeContainer}>
-                            <FontAwesome5 name="route" size={16} color="#E3F2FD" style={styles.icon} />
+                            <FontAwesome5 name="route" size={16} color="#FFFFF" style={styles.icon} />
                             <Text style={styles.routeText}>
                                 {item.local_saida} → {item.destino}
                             </Text>
@@ -102,43 +126,43 @@ export default function ViagensEmAndamento() {
 
                     <View style={styles.detailsContainer}>
                         <View style={styles.detailRow}>
-                            <FontAwesome5 name="car" color="#1976D2" style={styles.icon} />
+                            <FontAwesome5 name="car" color="#1A365D" style={{ marginRight: 8, width: 16 }} />
                             <Text style={styles.detailLabel}>Veículo:</Text>
                             <Text style={styles.detailValue}>{item.veiculo?.nome}</Text>
                         </View>
                         <View style={styles.detailRow}>
-                            <MaterialCommunityIcons name="car-info" color="#1976D2" style={styles.icon} />
+                            <MaterialCommunityIcons name="car-info" color="#1A365D" style={{ marginRight: 8, width: 16 }} />
                             <Text style={styles.detailLabel}>Placa:</Text>
                             <Text style={styles.detailValue}>{item.veiculo?.placa}</Text>
                         </View>
                         <View style={styles.detailRow}>
-                            <FontAwesome5 name="user" color="#1976D2" style={styles.icon} />
+                            <FontAwesome5 name="user" color="#1A365D" style={{ marginRight: 8, width: 16 }} />
                             <Text style={styles.detailLabel}>Motorista:</Text>
                             <Text style={styles.detailValue}>{item.motorista?.profissional?.nome}</Text>
                         </View>
                         <View style={styles.detailRow}>
-                            <Feather name="calendar" size={16} color="#1976D2" style={styles.icon} />
+                            <Feather name="calendar" size={16} color="#1A365D" style={{ marginRight: 8, width: 16 }} />
                             <Text style={styles.detailLabel}>Data:</Text>
                             <Text style={styles.detailValue}>{formatarDataHora(item.data_viagem)} </Text>
                         </View>
                         <View style={styles.detailRow}>
-                            <MaterialIcons name="speed" size={18} color="#1976D2" style={styles.icon} />
+                            <MaterialIcons name="speed" color="#1A365D" style={{ marginRight: 8, width: 16 }} />
                             <Text style={styles.detailLabel}>KM Inicial:</Text>
                             <Text style={styles.detailValue}>{item.km_inicial}</Text>
                         </View>
                         <View style={styles.detailRow}>
-                            <Feather name="droplet" size={16} color="#1976D2" style={styles.icon} />
+                            <Feather name="droplet" size={16} color="#1A365D" style={{ marginRight: 8, width: 16 }} />
                             <Text style={styles.detailLabel}>Combustível:</Text>
                             <Text style={styles.detailValue}>{item.nivel_combustivel}</Text>
                         </View>
                         <View style={styles.detailRow}>
-                            <FontAwesome5 name="bullseye" size={16} color="#1976D2" style={styles.icon} />
+                            <FontAwesome5 name="bullseye" size={16} color="#1A365D" style={{ marginRight: 8, width: 16 }} />
                             <Text style={styles.detailLabel}>Objetivo:</Text>
                             <Text style={styles.detailValue}>{item.objetivo_viagem}</Text>
                         </View>
                         {item.nota && (
                             <View style={styles.detailRow}>
-                                <Feather name="file-text" size={16} color="#1976D2" style={styles.icon} />
+                                <Feather name="file-text" size={16} color="#1A365D" style={styles.icon} />
                                 <Text style={styles.detailLabel}>Nota:</Text>
                                 <Text style={styles.detailValue}>{item.nota}</Text>
                             </View>
@@ -152,8 +176,8 @@ export default function ViagensEmAndamento() {
                         </TouchableOpacity>
 
                         <TouchableOpacity style={styles.cardAction} onPress={() => navigation.navigate("FinalizarViagem", { viagem_id: item.id, formType: "cancelar" })}>
-                            <MaterialCommunityIcons name="cancel" size={16} color={"#F44336"} />
-                            <Text style={[styles.cardActionText, { color: "#F44336" }]}>Cancelar</Text>
+                            <MaterialCommunityIcons name="cancel" size={16} color={"#E53E3E"} />
+                            <Text style={[styles.cardActionText, { color: "#E53E3E" }]}>Cancelar</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -178,23 +202,38 @@ export default function ViagensEmAndamento() {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <StatusBar barStyle="light-content" backgroundColor="#101026" />
+            <StatusBar barStyle="light-content" backgroundColor="#1B1B1B" />
             <View style={styles.container}>
-                <View style={styles.header}>
-                    <View style={styles.headerContent}>
+                <LinearGradient colors={["#1B1B1B", "#2A2A2A", "#1A365D"]} style={styles.header} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+                    <Animated.View
+                        style={[
+                            styles.headerContent,
+                            {
+                                opacity: fadeAnim,
+                                transform: [{ translateY: slideAnim }],
+                            },
+                        ]}
+                    >
                         <TouchableOpacity
                             style={styles.homeButton}
                             onPress={() => {
                                 navigation.navigate("Menu");
                             }}
                         >
-                            <Feather name="home" size={20} color="#0B7EC8" />
+                            <Feather name="home" size={20} color="#1A365D" />
                         </TouchableOpacity>
-                        <View style={styles.logoContainer}>
-                            <Text style={styles.logoText}>FROTA</Text>
+                        <View style={{ alignItems: "center" }}>
+                            <View style={styles.logoContainer}>
+                                <View style={styles.logoImageContainer}>
+                                    <Image source={require("../../../assets/enercon-icon.png")} style={styles.logoImage} resizeMode="contain" />
+                                </View>
+                                <Text style={styles.logoText}>FROTA</Text>
+                                <Text style={styles.logoSubtext}>Enercon - Energia e Assessoria</Text>
+                                <View style={styles.logoUnderline} />
+                            </View>
                         </View>
-                    </View>
-                </View>
+                    </Animated.View>
+                </LinearGradient>
 
                 <View style={styles.mainContent}>
                     <View style={styles.welcomeSection}>

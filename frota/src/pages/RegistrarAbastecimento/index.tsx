@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import { View, Text, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, ScrollView, Modal } from "react-native";
+import React, { useState, useContext, useRef, useEffect } from "react";
+import { View, Text, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, ScrollView, Modal, StatusBar, Image, Animated } from "react-native";
 import { api } from "../../services/api";
 import { AuthContext } from "../../contexts/AuthContext";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -13,6 +13,8 @@ import { styles } from "./styles";
 import { format } from "date-fns";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { ModalPicker } from "../../components/ModalPicker";
+import { LinearGradient } from "expo-linear-gradient";
+import ProcurarVeiculo from "../../components/ProcurarVeiculo";
 
 interface Veiculo {
     id: number;
@@ -42,8 +44,8 @@ export default function RegistrarAbastecimento() {
     const [submitting, setSubmitting] = useState(false);
     const [showForm, setShowForm] = useState(false);
 
-    const [showScanner, setShowScanner] = useState<boolean>(false);
-    const [qrCodeData, setQrCodeData] = useState<Veiculo | null>(null);
+    const [showScannerGlobal, setShowScannerGlobal] = useState<boolean>(false);
+    const [scannedData, setScannedData] = useState<string | null>(null);
 
     const [showDatePicker, setShowDatePicker] = useState<"data_abastecimento" | null>(null);
 
@@ -51,20 +53,24 @@ export default function RegistrarAbastecimento() {
     const [combustivelSelected, setCombustivelSelected] = useState<Combustivel | undefined>();
     const [combustivel, setCombustivel] = useState(combustivelOptions);
 
-    const handleQRCodeRead = (data: string) => {
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const slideAnim = useRef(new Animated.Value(50)).current;
+    const scaleAnim = useRef(new Animated.Value(0.9)).current;
+
+    const handleQRCodeReadGlobal = (data: string) => {
         try {
             const scannedVehicle: Veiculo = JSON.parse(data);
-            setQrCodeData(scannedVehicle);
-            setVeiculo(scannedVehicle);
-            setShowScanner(false);
-            setShowForm(true);
+            handleVeiculoSelect(scannedVehicle);
+            setShowScannerGlobal(false);
+            setScannedData(null);
         } catch (error) {
             Toast.show({
                 type: "error",
                 text1: "Erro ao ler QR Code",
                 text2: "Dados inválidos do veículo.",
             });
-            setShowScanner(false);
+            setShowScannerGlobal(false);
+            setScannedData(null);
         }
     };
 
@@ -80,34 +86,6 @@ export default function RegistrarAbastecimento() {
             tipo: "",
         };
     });
-
-    async function procurarVeiculo() {
-        if (!placaVeiculo.trim()) {
-            Toast.show({
-                type: "error",
-                text1: "Por favor, digite o código do veículo",
-            });
-            return;
-        }
-
-        try {
-            setLoading(true);
-            const response = await api.post("veiculo/placa", {
-                placa: placaVeiculo,
-            });
-
-            setVeiculo(response.data);
-            setShowForm(true);
-        } catch (error) {
-            console.log(error);
-            Toast.show({
-                type: "error",
-                text1: "Veículo não encontrado",
-            });
-        } finally {
-            setLoading(false);
-        }
-    }
 
     async function registrarAbastecimento() {
         if (!veiculo || !motorista) {
@@ -190,149 +168,163 @@ export default function RegistrarAbastecimento() {
         }));
     };
 
-    const handleDateChange = (event: any, selectedDate: Date | undefined) => {
-        setShowDatePicker(null);
-        if (selectedDate) {
-            updateFormData(showDatePicker!, format(selectedDate, "dd/MM/yyyy"));
-        }
-    };
-
     function handleChangeCombustivel(item: any) {
         setCombustivelSelected(item);
         setFormData((prev) => ({ ...prev, tipo: item.nome }));
         setModalCombustivel(false);
     }
 
+    const handleVeiculoSelect = (selectedVeiculo: Veiculo) => {
+        setVeiculo(selectedVeiculo);
+        setShowForm(true);
+    };
+
+    useEffect(() => {
+        Animated.parallel([
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 800,
+                useNativeDriver: true,
+            }),
+            Animated.timing(slideAnim, {
+                toValue: 0,
+                duration: 600,
+                useNativeDriver: true,
+            }),
+            Animated.timing(scaleAnim, {
+                toValue: 1,
+                duration: 500,
+                useNativeDriver: true,
+            }),
+        ]).start();
+    }, []);
+
     return (
         <SafeAreaView style={styles.container}>
+            <StatusBar barStyle="light-content" backgroundColor="#1B1B1B" />
             <Modal transparent={true} visible={modalCombustivel} animationType="fade">
                 <ModalPicker handleCloseModal={() => setModalCombustivel(false)} options={combustivel} selectedItem={handleChangeCombustivel} title="Selecione o tipo de combustível" labelKey="nome" />
             </Modal>
-            {!showScanner && (
-                <View style={styles.header}>
-                    <View style={styles.headerContent}>
-                        <TouchableOpacity
-                            style={styles.homeButton}
-                            onPress={() => {
-                                navigation.navigate("Menu");
-                            }}
-                        >
-                            <Feather name="home" size={20} color="#0B7EC8" />
-                        </TouchableOpacity>
+
+            <LinearGradient colors={["#1B1B1B", "#2A2A2A", "#1A365D"]} style={styles.header} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+                <Animated.View
+                    style={[
+                        styles.headerContent,
+                        {
+                            opacity: fadeAnim,
+                            transform: [{ translateY: slideAnim }],
+                        },
+                    ]}
+                >
+                    <TouchableOpacity
+                        style={styles.homeButton}
+                        onPress={() => {
+                            navigation.navigate("Menu");
+                        }}
+                    >
+                        <Feather name="home" size={20} color="#1A365D" />
+                    </TouchableOpacity>
+                    <View style={{ alignItems: "center"}}>
                         <View style={styles.logoContainer}>
+                            <View style={styles.logoImageContainer}>
+                                <Image source={require("../../../assets/enercon-icon.png")} style={styles.logoImage} resizeMode="contain" />
+                            </View>
                             <Text style={styles.logoText}>FROTA</Text>
+                            <Text style={styles.logoSubtext}>Enercon - Energia e Assessoria</Text>
+                            <View style={styles.logoUnderline} />
                         </View>
                     </View>
-                </View>
-            )}
+                </Animated.View>
+            </LinearGradient>
 
-            {showScanner ? (
+            {showScannerGlobal ? (
                 <View style={styles.qrCodeScannerContainer}>
                     <QRCodeScannerExpo
-                        onQRCodeRead={handleQRCodeRead}
+                        onQRCodeRead={handleQRCodeReadGlobal}
                         onCancel={() => {
-                            setShowScanner(false);
+                            setShowScannerGlobal(false);
                         }}
                     />
                 </View>
             ) : (
-                <ScrollView style={styles.mainContent} showsVerticalScrollIndicator={false}>
-                    <Text style={styles.formTitle}>Registrar Abastecimento</Text>
-
-                    {showForm ? (
-                        <View>
-                            {(motorista || veiculo) && (
-                                <View style={styles.infoContainer}>
-                                    {motorista && (
-                                        <Text style={styles.infoText}>
-                                            <Text style={styles.infoLabel}>Motorista / Profissional: </Text>
-                                            {profissional.nome}
-                                        </Text>
-                                    )}
-                                    {veiculo && (
-                                        <Text style={styles.infoText}>
-                                            <Text style={styles.infoLabel}>Veículo: </Text>
-                                            {veiculo.nome} - Placa: {veiculo.placa}
-                                        </Text>
-                                    )}
-                                </View>
-                            )}
-
-                            {veiculo && motorista && (
-                                <>
-                                    <View style={styles.fieldContainer}>
-                                        <Text style={styles.label}>Quilometragem *</Text>
-                                        <TextInput
-                                            placeholder="Ex: 10520"
-                                            style={styles.input}
-                                            placeholderTextColor="grey"
-                                            value={formData.km}
-                                            onChangeText={(text) => updateFormData("km", text)}
-                                            keyboardType="numeric"
-                                        />
-                                    </View>
-
-                                    <View style={styles.fieldContainer}>
-                                        <Text style={styles.label}>Litros *</Text>
-                                        <TextInput
-                                            placeholder="Litros"
-                                            keyboardType="numeric"
-                                            style={styles.input}
-                                            placeholderTextColor="grey"
-                                            value={formData.litros}
-                                            onChangeText={(text) => updateFormData("litros", text)}
-                                        />
-                                    </View>
-
-                                    <View style={styles.fieldContainer}>
-                                        <View style={[styles.fieldContainer, { width: "100%" }]}>
-                                            <Text style={styles.label}>Tipo do Abastecimento</Text>
-                                            <TouchableOpacity style={styles.pickerInput} onPress={() => setModalCombustivel(true)}>
-                                                <Text style={combustivelSelected?.nome ? styles.pickerText : styles.pickerPlaceholderText}>{combustivelSelected?.nome || "Selecione "}</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-
-                                    <TouchableOpacity style={[styles.button, styles.submitButton, submitting && styles.buttonDisabled]} onPress={registrarAbastecimento} disabled={submitting}>
-                                        {submitting ? <ActivityIndicator size={25} color="#FFF" /> : <Text style={styles.buttonText}>Registrar Abastecimento</Text>}
-                                    </TouchableOpacity>
-                                </>
-                            )}
+                <ScrollView style={styles.mainContent} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 20 }}>
+                    <Animated.View
+                        style={[
+                            styles.cardsContainer,
+                            {
+                                opacity: fadeAnim,
+                                transform: [{ scale: scaleAnim }],
+                            },
+                        ]}
+                    >
+                        <View style={{ marginBottom: 25}}>
+                            <Text style={styles.welcomeText}>Registro de Abastecimento</Text>
                         </View>
-                    ) : (
-                        <View>
-                            <View style={styles.fieldContainer}>
-                                <Text style={styles.label}>Digite a placa do veículo</Text>
-                                <TextInput autoCapitalize="characters"  placeholder="EX: ABC-1234" style={styles.input} placeholderTextColor="grey" value={placaVeiculo} onChangeText={setPlacaVeiculo} editable={!loading} />
-                            </View>
 
-                            <TouchableOpacity style={[styles.button, loading && styles.buttonDisabled]} onPress={procurarVeiculo} disabled={loading}>
-                                {loading ? (
-                                    <ActivityIndicator size={25} color="#FFF" />
-                                ) : (
-                                    <Text style={styles.buttonText}>
-                                        Procurar <Feather size={15} name="search" />{" "}
-                                    </Text>
+                        {showForm ? (
+                            <View>
+                                {(motorista || veiculo) && (
+                                    <View style={styles.infoContainer}>
+                                        {motorista && (
+                                            <Text style={styles.infoText}>
+                                                <Text style={styles.infoLabel}>Motorista: </Text>
+                                                {profissional.nome}
+                                            </Text>
+                                        )}
+                                        {veiculo && (
+                                            <Text style={styles.infoText}>
+                                                <Text style={styles.infoLabel}>Veículo: </Text>
+                                                {veiculo.nome} - Placa: {veiculo.placa}
+                                            </Text>
+                                        )}
+                                    </View>
                                 )}
-                            </TouchableOpacity>
-                            <Text style={{ justifyContent: "center", textAlign: "center", marginBottom: 15, fontSize: 15, fontWeight: "bold" }}>OU</Text>
 
-                            <TouchableOpacity
-                                style={[styles.button, loading && styles.buttonDisabled]}
-                                onPress={() => {
-                                    setShowScanner(true);
-                                }}
-                                disabled={loading}
-                            >
-                                <Text style={styles.buttonText}>
-                                    Procurar por codigo QR <MaterialCommunityIcons size={15} name="qrcode" />
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                    )}
+                                <View style={styles.fieldContainer}>
+                                    <Text style={styles.label}>Quilometragem *</Text>
+                                    <TextInput
+                                        placeholder="Ex: 10520"
+                                        style={styles.input}
+                                        placeholderTextColor="grey"
+                                        value={formData.km}
+                                        onChangeText={(text) => updateFormData("km", text)}
+                                        keyboardType="numeric"
+                                    />
+                                </View>
+
+                                <View style={styles.fieldContainer}>
+                                    <Text style={styles.label}>Litros *</Text>
+                                    <TextInput
+                                        placeholder="Litros"
+                                        keyboardType="numeric"
+                                        style={styles.input}
+                                        placeholderTextColor="grey"
+                                        value={formData.litros}
+                                        onChangeText={(text) => updateFormData("litros", text)}
+                                    />
+                                </View>
+
+                                <View style={styles.fieldContainer}>
+                                    <View style={[styles.fieldContainer, { width: "100%" }]}>
+                                        <Text style={styles.label}>Tipo do Abastecimento</Text>
+                                        <TouchableOpacity style={styles.pickerInput} onPress={() => setModalCombustivel(true)}>
+                                            <Text style={combustivelSelected?.nome ? styles.pickerText : styles.pickerPlaceholderText}>{combustivelSelected?.nome || "Selecione "}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+
+                                <TouchableOpacity style={[styles.button, styles.submitButton, submitting && styles.buttonDisabled]} onPress={registrarAbastecimento} disabled={submitting}>
+                                    {submitting ? <ActivityIndicator size={25} color="#FFF" /> : <Text style={styles.buttonText}>Registrar Abastecimento</Text>}
+                                </TouchableOpacity>
+                            </View>
+                        ) : (
+                            <View>
+                                <ProcurarVeiculo onVeiculoSelect={handleVeiculoSelect} currentVehicle={veiculo} onOpenScanner={() => setShowScannerGlobal(true)} />
+                            </View>
+                        )}
+                    </Animated.View>
                 </ScrollView>
             )}
-            {showDatePicker && <DateTimePicker value={new Date()} mode="date" display="default" onChange={handleDateChange} />}
         </SafeAreaView>
     );
 }

@@ -14,6 +14,7 @@ import {
     ActivityIndicator,
     Modal,
     KeyboardAvoidingView,
+    Image,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -28,7 +29,6 @@ import { getLocalizacao } from "../../services/ViagemServices/useLocationService
 import axios from "axios";
 import QRCodeScannerExpo from "../../components/QrCodeScanner";
 import { ModalPicker } from "../../components/ModalPicker";
-import { styles } from "./styles";
 
 interface Veiculo {
     id: number;
@@ -262,9 +262,14 @@ const RegistrarViagem = () => {
                         labelKey="nome"
                     />
                 </Modal>
-                <StatusBar backgroundColor="#0B7EC8" barStyle="light-content" />
+                <StatusBar backgroundColor="#1B1B1B" barStyle="light-content" />
 
-                <LinearGradient colors={["#0B7EC8", "#1976D2", "#0D47A1"]} style={styles.header} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+                <LinearGradient 
+                    colors={["#1B1B1B", "#2A2A2A", "#1A365D"]} 
+                    style={styles.header} 
+                    start={{ x: 0, y: 0 }} 
+                    end={{ x: 1, y: 1 }}
+                >
                     <Animated.View
                         style={[
                             styles.headerContent,
@@ -280,11 +285,19 @@ const RegistrarViagem = () => {
                                 navigation.navigate("Menu");
                             }}
                         >
-                            <Feather name="home" size={20} color="#0B7EC8" />
+                            <Feather name="home" size={20} color="#1A365D" />
                         </TouchableOpacity>
                         <View style={styles.headerTop}>
                             <View style={styles.logoContainer}>
+                                <View style={styles.logoImageContainer}>
+                                    <Image 
+                                        source={require('../../../assets/enercon-icon.png')} 
+                                        style={styles.logoImage}
+                                        resizeMode="contain"
+                                    />
+                                </View>
                                 <Text style={styles.logoText}>FROTA</Text>
+                                <Text style={styles.logoSubtext}>Enercon - Energia e Assessoria</Text>
                                 <View style={styles.logoUnderline} />
                             </View>
                         </View>
@@ -339,7 +352,7 @@ const RegistrarViagem = () => {
                                         <TextInput
                                             placeholder="Local de saída"
                                             style={styles.input}
-                                            placeholderTextColor="grey"
+                                            placeholderTextColor="#A0AEC0"
                                             value={formData.local_saida}
                                             onChangeText={(text) => updateFormData("local_saida", text)}
                                         />
@@ -350,7 +363,7 @@ const RegistrarViagem = () => {
                                         <TextInput
                                             placeholder="Destino"
                                             style={styles.input}
-                                            placeholderTextColor="grey"
+                                            placeholderTextColor="#A0AEC0"
                                             value={formData.destino}
                                             onChangeText={(text) => updateFormData("destino", text)}
                                         />
@@ -361,7 +374,7 @@ const RegistrarViagem = () => {
                                         <TextInput
                                             placeholder="Objetivo da viagem"
                                             style={styles.input}
-                                            placeholderTextColor="grey"
+                                            placeholderTextColor="#A0AEC0"
                                             value={formData.objetivo_viagem}
                                             onChangeText={(text) => updateFormData("objetivo_viagem", text)}
                                         />
@@ -379,7 +392,7 @@ const RegistrarViagem = () => {
                                             <TextInput
                                                 placeholder="Quilometragem inicial"
                                                 style={styles.input}
-                                                placeholderTextColor="grey"
+                                                placeholderTextColor="#A0AEC0"
                                                 value={formData.km_inicial}
                                                 onChangeText={(text) => updateFormData("km_inicial", text)}
                                                 keyboardType="numeric"
@@ -403,5 +416,215 @@ const RegistrarViagem = () => {
         </KeyboardAvoidingView>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#F1F2F6",
+    },
+    header: {
+        paddingTop: 40,
+        paddingBottom: 30,
+        paddingHorizontal: 20,
+        borderBottomLeftRadius: 25,
+        borderBottomRightRadius: 25,
+        elevation: 8,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+    },
+    headerContent: {
+        gap: 20,
+    },
+    headerTop: {
+        alignItems: "center",
+    },
+    logoContainer: {
+        alignItems: "center",
+    },
+    logoImageContainer: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: "#FFFFFF",
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: 10,
+        borderWidth: 2,
+        borderColor: "#FF8C00",
+    },
+    logoImage: {
+        width: 35,
+        height: 35,
+    },
+    logoText: {
+        fontSize: 22,
+        fontWeight: "bold",
+        color: "#FFFFFF",
+        letterSpacing: 2,
+        marginBottom: 4,
+    },
+    logoSubtext: {
+        fontSize: 11,
+        color: "#E2E8F0",
+        marginBottom: 8,
+        fontWeight: "500",
+    },
+    logoUnderline: {
+        width: 50,
+        height: 3,
+        backgroundColor: "#FF8C00",
+        borderRadius: 2,
+    },
+    fieldContainer: {
+        width: "100%",
+        marginBottom: 20,
+    },
+    infoContainer: {
+        backgroundColor: "#FFF5E6",
+        padding: 15,
+        borderRadius: 12,
+        marginBottom: 20,
+        borderWidth: 1,
+        borderColor: "#FF8C00",
+    },
+    homeButton: {
+        backgroundColor: "#FFFFFF",
+        borderRadius: 25,
+        padding: 8,
+        position: "absolute",
+        left: 10,
+        top: 5,
+        zIndex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        width: 45,
+        height: 45,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    button: {
+        width: "100%",
+        height: 50,
+        backgroundColor: "#1A365D",
+        borderRadius: 12,
+        justifyContent: "center",
+        alignItems: "center",
+        shadowColor: "#1A365D",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 6,
+        marginBottom: 20,
+    },
+    infoLabel: {
+        fontWeight: "bold",
+        color: "#E65100",
+    },
+    infoText: {
+        fontSize: 14,
+        color: "#2D3748",
+        marginBottom: 5,
+    },
+    qrCodeScannerContainer: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "black",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 1000,
+    },
+    rowContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: 0,
+    },
+    submitButton: {
+        backgroundColor: "#FF8C00",
+        marginTop: 10,
+        marginBottom: 30,
+    },
+    input: {
+        width: "100%",
+        height: 50,
+        backgroundColor: "white",
+        borderRadius: 12,
+        paddingHorizontal: 16,
+        color: "#2D3748",
+        fontSize: 16,
+        borderWidth: 1,
+        borderColor: "#E2E8F0",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    pickerInput: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "100%",
+        height: 50,
+        backgroundColor: "white",
+        borderRadius: 12,
+        paddingHorizontal: 16,
+        borderWidth: 1,
+        borderColor: "#E2E8F0",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    pickerText: {
+        fontSize: 16,
+        color: "#2D3748",
+    },
+    pickerPlaceholderText: {
+        fontSize: 16,
+        color: "#A0AEC0",
+    },
+    label: {
+        fontSize: 14,
+        fontWeight: "600",
+        color: "#2D3748",
+        marginBottom: 8,
+    },
+    buttonText: {
+        fontSize: 16,
+        fontWeight: "600",
+        color: "white",
+        textTransform: "uppercase",
+        letterSpacing: 0.5,
+    },
+    mainContent: {
+        flex: 1,
+    },
+    scrollContent: {
+        paddingBottom: 20,
+    },
+    cardsContainer: {
+        paddingHorizontal: 20,
+        paddingTop: 25,
+    },
+    welcomeSection: {
+        marginBottom: 25,
+    },
+    welcomeText: {
+        fontSize: 24,
+        fontWeight: "bold",
+        color: "#1A202C",
+        marginBottom: 5,
+        textAlign: "center",
+    },
+});
 
 export default RegistrarViagem;

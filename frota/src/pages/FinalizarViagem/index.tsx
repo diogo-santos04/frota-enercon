@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, SafeAreaView, StyleSheet, ScrollView, TextInput, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
+import { View, Text, SafeAreaView, StyleSheet, ScrollView, TextInput, TouchableOpacity, Alert, ActivityIndicator, StatusBar, Image } from "react-native";
 import { api } from "../../services/api";
 import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -7,6 +7,7 @@ import { StackParamsList } from "../../routes/app.routes";
 import Toast from "react-native-toast-message";
 import { Feather, MaterialIcons, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import axios from "axios";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface ViagemDestino {
     viagem_id: number;
@@ -153,7 +154,13 @@ export default function FinalizarViagem() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
+            <StatusBar barStyle="light-content" backgroundColor="#1B1B1B" />
+            <LinearGradient 
+                colors={["#1B1B1B", "#2A2A2A", "#1A365D"]} 
+                style={styles.header} 
+                start={{ x: 0, y: 0 }} 
+                end={{ x: 1, y: 1 }}
+            >
                 <View style={styles.headerContent}>
                     <TouchableOpacity
                         style={styles.homeButton}
@@ -161,13 +168,22 @@ export default function FinalizarViagem() {
                             navigation.navigate("Menu");
                         }}
                     >
-                        <Feather name="home" size={20} color="#0B7EC8" />
+                        <Feather name="home" size={20} color="#1A365D" />
                     </TouchableOpacity>
                     <View style={styles.logoContainer}>
+                        <View style={styles.logoImageContainer}>
+                            <Image 
+                                source={require("../../../assets/enercon-icon.png")} 
+                                style={styles.logoImage} 
+                                resizeMode="contain" 
+                            />
+                        </View>
                         <Text style={styles.logoText}>FROTA</Text>
+                        <Text style={styles.logoSubtext}>Enercon - Energia e Assessoria</Text>
+                        <View style={styles.logoUnderline} />
                     </View>
                 </View>
-            </View>
+            </LinearGradient>
 
             <ScrollView style={styles.mainContent} showsVerticalScrollIndicator={false}>
                 {route.params.formType === "cancelar" ? (
@@ -238,26 +254,20 @@ export default function FinalizarViagem() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#0B7EC8",
+        backgroundColor: "#F1F2F6",
     },
     header: {
-        backgroundColor: "#0B7EC8",
+        backgroundColor: "#1B1B1B",
         paddingBottom: 25,
         paddingTop: 20,
     },
     headerContent: {
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
         paddingHorizontal: 25,
         paddingTop: 15,
-    },
-    logoContainer: {
-        alignItems: "center",
-        marginBottom: 25,
-    },
-    logoText: {
-        fontSize: 28,
-        fontWeight: "bold",
-        color: "#FFFFFF",
-        letterSpacing: 2,
+        position: "relative",
     },
     homeButton: {
         backgroundColor: "#FFFFFF",
@@ -271,18 +281,60 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         width: 45,
         height: 45,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    logoContainer: {
+        alignItems: "center",
+        marginBottom: 25,
+    },
+    logoImageContainer: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: "#FFFFFF",
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: 10,
+        borderWidth: 2,
+        borderColor: "#FF8C00",
+    },
+    logoImage: {
+        width: 35,
+        height: 35,
+    },
+    logoText: {
+        fontSize: 28,
+        fontWeight: "bold",
+        color: "#FFFFFF",
+        letterSpacing: 2,
+    },
+    logoSubtext: {
+        fontSize: 11,
+        color: "#E2E8F0",
+        marginBottom: 8,
+        fontWeight: "500",
+    },
+    logoUnderline: {
+        width: 50,
+        height: 3,
+        backgroundColor: "#FF8C00",
+        borderRadius: 2,
     },
     formTitle: {
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: "bold",
-        textAlign: "center",
+        color: "#1A202C",
         marginBottom: 20,
-        color: "#333",
+        textAlign: "center",
     },
     mainContent: {
         flex: 1,
         padding: 25,
-        backgroundColor: "#F5F5F5",
+        backgroundColor: "#F1F2F6",
         borderTopLeftRadius: 25,
         borderTopRightRadius: 25,
         marginTop: -15,
@@ -290,57 +342,48 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 14,
         fontWeight: "500",
-        color: "#333",
+        color: "#4A5568",
         marginBottom: 8,
     },
     fieldContainer: {
-        width: "100%",
         marginBottom: 20,
     },
     input: {
-        width: "100%",
-        height: 50,
-        backgroundColor: "white",
+        backgroundColor: "#FFFFFF",
         borderRadius: 8,
-        paddingHorizontal: 16,
-        color: "#000",
+        padding: 16,
+        borderWidth: 1,
+        borderColor: "#E2E8F0",
         fontSize: 16,
-        borderWidth: 2,
-        borderColor: "#3A3F5A",
+        color: "#1A202C",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    textArea: {
+        height: 120,
+        textAlignVertical: "top",
+    },
+    button: {
+        height: 50,
+        borderRadius: 8,
+        justifyContent: "center",
+        alignItems: "center",
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 4,
-        elevation: 4,
-    },
-    textArea: {
-        height: 80,
-        textAlignVertical: "top",
-        paddingTop: 12,
-    },
-    button: {
-        width: "100%",
-        height: 50,
-        backgroundColor: "#0B7EC8",
-        borderRadius: 8,
-        justifyContent: "center",
-        alignItems: "center",
-        shadowColor: "#2952CC",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 6,
-        marginBottom: 20,
+        elevation: 3,
     },
     submitButton: {
         backgroundColor: "#28a745",
-        marginTop: 10,
-        marginBottom: 30,
+        marginTop: 20,
     },
     cancelButton: {
-        backgroundColor: "#F44336",
-        marginTop: 10,
-        marginBottom: 30,
+        backgroundColor: "#E53E3E",
+        marginTop: 20,
     },
     infoContainer: {
         backgroundColor: "#E8F5E8",
@@ -352,10 +395,10 @@ const styles = StyleSheet.create({
     },
     infoText: {
         fontSize: 14,
-        color: "#333",
+        color: "#1A202C",
     },
     infoLabel: {
         fontWeight: "bold",
         color: "#28a745",
-    },
+    }
 });

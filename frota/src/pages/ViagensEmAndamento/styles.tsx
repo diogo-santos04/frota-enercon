@@ -3,14 +3,14 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: "#101026",
+        backgroundColor: "#F1F2F6",
     },
     container: {
         flex: 1,
-        backgroundColor: "#0B7EC8",
+        backgroundColor: "#F1F2F6",
     },
     header: {
-        backgroundColor: "#0B7EC8",
+        backgroundColor: "#1B1B1B",
         paddingBottom: 25,
         paddingTop: 20,
     },
@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
         paddingTop: 15,
         position: "relative",
     },
-    
+
     homeButton: {
         backgroundColor: "#FFFFFF",
         borderRadius: 25,
@@ -35,6 +35,11 @@ export const styles = StyleSheet.create({
         justifyContent: "center",
         width: 45,
         height: 45,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
     },
     logoContainer: {
         alignItems: "center",
@@ -43,7 +48,7 @@ export const styles = StyleSheet.create({
     logoText: {
         fontSize: 28,
         fontWeight: "bold",
-        color: "#FFFFFF",
+        color: "#ffffFF",
         letterSpacing: 2,
     },
     welcomeSection: {
@@ -54,18 +59,18 @@ export const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 24,
         fontWeight: "bold",
-        color: "black",
+        color: "#1A202C",
         marginBottom: 4,
     },
     sectionSubtitle: {
         fontSize: 14,
-        color: "#9e9eb3",
+        color: "#4A5568",
         marginBottom: 16,
     },
     mainContent: {
         flex: 1,
         padding: 25,
-        backgroundColor: "#F5F5F5",
+        backgroundColor: "#F1F2F6",
         borderTopLeftRadius: 25,
         borderTopRightRadius: 25,
         marginTop: -15,
@@ -80,7 +85,7 @@ export const styles = StyleSheet.create({
         marginBottom: 16,
         elevation: 5,
         overflow: "hidden",
-        borderColor: "#0B7EC8",
+        borderColor: "#E2E8F0",
         borderWidth: 1,
     },
     cardGradient: {
@@ -96,7 +101,7 @@ export const styles = StyleSheet.create({
         padding: 16,
         borderBottomWidth: 1,
         borderBottomColor: "#E3F2FD",
-        backgroundColor: "#1976D2",
+        backgroundColor: "#1A365D",
     },
     routeContainer: {
         flexDirection: "row",
@@ -106,7 +111,7 @@ export const styles = StyleSheet.create({
     routeText: {
         fontSize: 16,
         fontWeight: "bold",
-        color: "#FFF",
+        color: "#E3F2FD",
         marginLeft: 8,
         flex: 1,
     },
@@ -114,18 +119,18 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 4,
         borderRadius: 20,
-        backgroundColor: "#E3F2FD",
+        backgroundColor: "#FFDDAA",
     },
     statusText: {
         fontSize: 12,
         fontWeight: "bold",
-        color: "#1976D2",
+        color: "#FF8C00",
     },
     detailsContainer: {
         padding: 16,
         backgroundColor: "#FFFFFF",
         borderBottomWidth: 1,
-        borderBottomColor: "#0B7EC8",
+        borderBottomColor: "#E2E8F0",
     },
     detailRow: {
         flexDirection: "row",
@@ -135,22 +140,50 @@ export const styles = StyleSheet.create({
     icon: {
         marginRight: 8,
         width: 16,
+        color: "#FFFFFF",
     },
     detailLabel: {
         fontSize: 14,
-        color: "#666",
+        color: "#4A5568",
         width: 90,
+    },
+    logoImageContainer: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: "#FFFFFF",
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: 10,
+        borderWidth: 2,
+        borderColor: "#FF8C00",
+    },
+    logoSubtext: {
+        fontSize: 11,
+        color: "#E2E8F0",
+        marginBottom: 8,
+        fontWeight: "500",
+    },
+    logoUnderline: {
+        width: 50,
+        height: 3,
+        backgroundColor: "#FF8C00",
+        borderRadius: 2,
+    },
+     logoImage: {
+        width: 35,
+        height: 35,
     },
     detailValue: {
         fontSize: 14,
-        color: "#1976D2",
+        color: "#FF8C00",
         fontWeight: "500",
         flex: 1,
     },
     cardFooter: {
         flexDirection: "row",
         borderTopWidth: 1,
-        borderTopColor: "#E3F2FD",
+        borderTopColor: "#E2E8F0",
         padding: 12,
         justifyContent: "center",
         backgroundColor: "#F8F9FA",
@@ -158,12 +191,12 @@ export const styles = StyleSheet.create({
     cardAction: {
         flexDirection: "row",
         alignItems: "center",
-        marginRight: 20,
+        marginHorizontal: 15,
     },
     cardActionText: {
         marginLeft: 6,
         fontSize: 13,
-        color: "#6e6e93",
+        fontWeight: "bold",
     },
     loadingContainer: {
         flex: 1,
@@ -172,7 +205,7 @@ export const styles = StyleSheet.create({
         paddingVertical: 60,
     },
     loadingText: {
-        color: "#9e9eb3",
+        color: "#A0AEC0",
         marginTop: 10,
         fontSize: 16,
     },
@@ -183,13 +216,13 @@ export const styles = StyleSheet.create({
         paddingVertical: 60,
     },
     emptyText: {
-        color: "#9e9eb3",
+        color: "#A0AEC0",
         fontSize: 18,
         fontWeight: "bold",
         marginTop: 16,
     },
     emptySubText: {
-        color: "#9e9eb3",
+        color: "#A0AEC0",
         fontSize: 14,
         marginTop: 8,
         textAlign: "center",

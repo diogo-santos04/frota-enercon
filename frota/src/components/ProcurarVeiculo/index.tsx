@@ -58,7 +58,7 @@ export default function ProcurarVeiculo({ onVeiculoSelect, currentVehicle, onOpe
                 <TextInput
                     placeholder="EX: ABC-1234"
                     style={styles.input}
-                    placeholderTextColor="grey"
+                    placeholderTextColor="#A0AEC0"
                     value={placaVeiculo}
                     onChangeText={setPlacaVeiculo}
                     editable={!loading}
@@ -75,7 +75,7 @@ export default function ProcurarVeiculo({ onVeiculoSelect, currentVehicle, onOpe
                     </Text>
                 )}
             </TouchableOpacity>
-            <Text style={{ justifyContent: "center", textAlign: "center", marginBottom: 15, fontSize: 15, fontWeight: "bold" }}>OU</Text>
+            <Text style={{ justifyContent: "center", textAlign: "center", marginBottom: 15, fontSize: 15, fontWeight: "bold", color: "#4A5568" }}>OU</Text>
 
             <TouchableOpacity
                 style={[styles.button, loading && styles.buttonDisabled]}
@@ -103,34 +103,34 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: 14,
-        fontWeight: "500",
-        color: "#333",
+        fontWeight: "600",
+        color: "#2D3748",
         marginBottom: 8,
     },
     input: {
         width: "100%",
         height: 50,
         backgroundColor: "white",
-        borderRadius: 8,
+        borderRadius: 12,
         paddingHorizontal: 16,
-        color: "#000",
+        color: "#2D3748",
         fontSize: 16,
-        borderWidth: 2,
-        borderColor: "#3A3F5A",
+        borderWidth: 1,
+        borderColor: "#E2E8F0",
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
+        shadowOpacity: 0.1,
         shadowRadius: 4,
-        elevation: 4,
+        elevation: 3,
     },
     button: {
         width: "100%",
         height: 50,
-        backgroundColor: "#0B7EC8",
-        borderRadius: 8,
+        backgroundColor: "#FF8C00",
+        borderRadius: 12,
         justifyContent: "center",
         alignItems: "center",
-        shadowColor: "#2952CC",
+        shadowColor: "#FF8C00",
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
