@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView, FlatList, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView, FlatList, KeyboardAvoidingView, Platform, Image } from "react-native";
 import { api } from "../../services/api";
 import { AuthContext } from "../../contexts/AuthContext";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -12,6 +12,8 @@ import ProcurarVeiculo from "../../components/ProcurarVeiculo";
 import VistoriaForm from "./VistoriaForm";
 import QRCodeScannerExpo from "../../components/QrCodeScanner";
 import { styles } from "./styles";
+import { LinearGradient } from "expo-linear-gradient";
+import { Animated } from "react-native";
 
 interface Veiculo {
     id: number;
@@ -157,62 +159,49 @@ export default function RegistrarVistoria() {
         return `${dia}/${mes}/${ano}`;
     };
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case "Finalizado":
-                return "#28a745";
-            case "Pendente":
-                return "#ffc107";
-            case "Cancelado":
-                return "#dc3545";
-            default:
-                return "#6c757d";
-        }
-    };
-
     const renderVistoriaItem = ({ item }: { item: Vistoria }) => (
         <View style={styles.viagemCard}>
             <View style={styles.cardGradient}>
                 <View style={styles.viagemHeader}>
-                    <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
-                        <Text style={[styles.statusText, { color: "#FFFFFF" }]}>{item.status}</Text>
+                    <View style={[styles.statusBadge]}>
+                        <Text style={[styles.statusText]}>{item.status}</Text>
                     </View>
                 </View>
 
                 <View style={styles.detailsContainer}>
                     <View style={styles.detailRow}>
-                        <FontAwesome5 name="calendar" color="#1976D2" style={styles.icon} />
+                        <FontAwesome5 name="calendar" color="#1A365D" style={styles.icon} />
                         <Text style={styles.detailLabel}>Data da Vistoria:</Text>
                         <Text style={styles.detailValue}>{formatarDataHora(item.data_vistoria)}</Text>
                     </View>
 
                     <View style={styles.detailRow}>
-                        <MaterialCommunityIcons name="car-arrow-left" size={17} color="#1976D2" style={styles.icon} />
+                        <MaterialCommunityIcons name="car-arrow-left" size={17} color="#1A365D" style={styles.icon} />
                         <Text style={styles.detailLabel}>Data da troca do oleo:</Text>
                         <Text style={styles.detailValue}>{formatarDataHora(item.data_troca_oleo)}</Text>
                     </View>
 
                     <View style={styles.detailRow}>
-                        <MaterialCommunityIcons name="tire" size={17} color="#1976D2" style={styles.icon} />
+                        <MaterialCommunityIcons name="tire" size={17} color="#1A365D" style={styles.icon} />
                         <Text style={styles.detailLabel}>Pneu dianteiro:</Text>
                         <Text style={styles.detailValue}>{item.pneu_dianteiro}</Text>
                     </View>
 
                     <View style={styles.detailRow}>
-                        <MaterialCommunityIcons name="tire" size={17} color="#1976D2" style={styles.icon} />
+                        <MaterialCommunityIcons name="tire" size={17} color="#1A365D" style={styles.icon} />
                         <Text style={styles.detailLabel}>Pneu traseiro:</Text>
                         <Text style={styles.detailValue}>{item.pneu_traseiro}</Text>
                     </View>
 
                     <View style={styles.detailRow}>
-                        <MaterialCommunityIcons name="tire" size={17} color="#1976D2" style={styles.icon} />
+                        <MaterialCommunityIcons name="tire" size={17} color="#1A365D" style={styles.icon} />
                         <Text style={styles.detailLabel}>Pneu estepe:</Text>
                         <Text style={styles.detailValue}>{item.pneu_estepe}</Text>
                     </View>
 
                     {item.nota && (
                         <View style={styles.detailRow}>
-                            <Feather name="file-text" size={16} color="#1976D2" style={styles.icon} />
+                            <Feather name="file-text" size={16} color="#1A365D" style={styles.icon} />
                             <Text style={styles.detailLabel}>Nota:</Text>
                             <Text style={styles.detailValue}>{item.nota}</Text>
                         </View>
@@ -260,7 +249,7 @@ export default function RegistrarVistoria() {
                     style={styles.flatListContainer}
                     data={lastVistorias}
                     renderItem={renderVistoriaItem}
-                    keyExtractor={(item) => String(item.id)}
+                    keyExtractor={(item) => String(item.id)} 
                     showsVerticalScrollIndicator={true}
                     bounces={true}
                     contentContainerStyle={styles.flatListContent}
@@ -271,24 +260,50 @@ export default function RegistrarVistoria() {
     };
 
     return (
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}>
+        <KeyboardAvoidingView 
+            style={{ flex: 1 }} 
+            behavior={Platform.OS === "ios" ? "padding" : "height"} 
+            keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+        >
             <SafeAreaView style={styles.container}>
                 {showScannerGlobal ? (
-                    <View style={styles.qrCodeScannerFullScreen}>
-                        <QRCodeScannerExpo onQRCodeRead={handleQRCodeReadGlobal} onCancel={() => setShowScannerGlobal(false)} />
+                    <View style={styles.qrCodeScannerContainer}>
+                        <QRCodeScannerExpo 
+                            onQRCodeRead={handleQRCodeReadGlobal} 
+                            onCancel={() => setShowScannerGlobal(false)} 
+                        />
                     </View>
                 ) : (
                     <>
-                        <View style={styles.header}>
-                            <View style={styles.headerContent}>
-                                <TouchableOpacity style={styles.homeButton} onPress={() => navigation.navigate("Menu")}>
-                                    <Feather name="home" size={20} color="#0B7EC8" />
+                        <LinearGradient 
+                            colors={["#1B1B1B", "#2A2A2A", "#1A365D"]} 
+                            style={styles.header} 
+                            start={{ x: 0, y: 0 }} 
+                            end={{ x: 1, y: 1 }}
+                        >
+                            <Animated.View style={styles.headerContent}>
+                                <TouchableOpacity
+                                    style={styles.homeButton}
+                                    onPress={() => navigation.navigate("Menu")}
+                                >
+                                    <Feather name="home" size={20} color="#1A365D" />
                                 </TouchableOpacity>
-                                <View style={styles.logoContainer}>
-                                    <Text style={styles.logoText}>FROTA</Text>
+                                <View style={styles.headerTop}>
+                                    <View style={styles.logoContainer}>
+                                        <View style={styles.logoImageContainer}>
+                                            <Image 
+                                                source={require('../../../assets/enercon-icon.png')} 
+                                                style={styles.logoImage}
+                                                resizeMode="contain"
+                                            />
+                                        </View>
+                                        <Text style={styles.logoText}>FROTA</Text>
+                                        <Text style={styles.logoSubtext}>Enercon - Energia e Assessoria</Text>
+                                        <View style={styles.logoUnderline} />
+                                    </View>
                                 </View>
-                            </View>
-                        </View>
+                            </Animated.View>
+                        </LinearGradient>
 
                         <View style={styles.mainContent}>
                             <Text style={styles.formTitle}>Realizar Vistoria</Text>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Dimensions } from "react-native";
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Dimensions, StatusBar } from "react-native";
 import { api } from "../../services/api";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackParamsList } from "../../routes/app.routes";
@@ -8,6 +8,8 @@ import Toast from "react-native-toast-message";
 import { Feather } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { styles } from "./styles";
+import { LinearGradient } from "expo-linear-gradient";
+import { Image } from "react-native";
 
 interface Item {
     id: number;
@@ -135,22 +137,34 @@ export default function VistoriaItem() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
+            <StatusBar barStyle="light-content" backgroundColor="#1B1B1B" />
+            <LinearGradient 
+                colors={["#1B1B1B", "#2A2A2A", "#1A365D"]} 
+                style={styles.header} 
+                start={{ x: 0, y: 0 }} 
+                end={{ x: 1, y: 1 }}
+            >
                 <View style={styles.headerContent}>
                     <TouchableOpacity
                         style={styles.homeButton}
-                        onPress={() => {
-                            navigation.navigate("Menu");
-                        }}
+                        onPress={() => navigation.navigate("Menu")}
                     >
-                        <Feather name="home" size={20} color="#0B7EC8" />
+                        <Feather name="home" size={20} color="#1A365D" />
                     </TouchableOpacity>
                     <View style={styles.logoContainer}>
+                        <View style={styles.logoImageContainer}>
+                            <Image 
+                                source={require('../../../assets/enercon-icon.png')} 
+                                style={styles.logoImage}
+                                resizeMode="contain"
+                            />
+                        </View>
                         <Text style={styles.logoText}>FROTA</Text>
+                        <Text style={styles.logoSubtext}>Enercon - Energia e Assessoria</Text>
+                        <View style={styles.logoUnderline} />
                     </View>
                 </View>
-            </View>
-
+            </LinearGradient>
             <ScrollView style={styles.mainContent} showsVerticalScrollIndicator={false}>
                 <Text style={styles.formTitle}>Assinale os itens que precisam de manutenção</Text>
 

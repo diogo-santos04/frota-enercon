@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { styles } from "./styles";
 import MaskInput from "react-native-mask-input";
 import { ModalPicker } from "../../../components/ModalPicker";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface Veiculo {
     id: number;

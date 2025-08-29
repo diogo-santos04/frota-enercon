@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Image, FlatList, Modal, TextInput } from "react-native";
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Image, FlatList, Modal, TextInput, StatusBar } from "react-native";
 import { api } from "../../services/api";
 import { AuthContext } from "../../contexts/AuthContext";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -15,6 +15,7 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { styles } from "./styles";
 import { ModalPicker } from "../../components/ModalPicker"; 
+import { LinearGradient } from "expo-linear-gradient";
 
 interface Veiculo {
     id: number;
@@ -351,6 +352,7 @@ export default function RegistrarManutencao() {
 
     return (
         <SafeAreaView style={styles.container}>
+            <StatusBar barStyle="light-content" backgroundColor="#1B1B1B" />
             <Modal transparent={true} visible={modalTipoManutencao} animationType="fade">
                 <ModalPicker
                     handleCloseModal={() => setModalTipoManutencao(false)}
@@ -361,21 +363,33 @@ export default function RegistrarManutencao() {
                 />
             </Modal>
 
-            <View style={styles.header}>
+            <LinearGradient 
+                colors={["#1B1B1B", "#2A2A2A", "#1A365D"]} 
+                style={styles.header} 
+                start={{ x: 0, y: 0 }} 
+                end={{ x: 1, y: 1 }}
+            >
                 <View style={styles.headerContent}>
                     <TouchableOpacity
                         style={styles.homeButton}
-                        onPress={() => {
-                            navigation.navigate("Menu");
-                        }}
+                        onPress={() => navigation.navigate("Menu")}
                     >
-                        <Feather name="home" size={20} color="#0B7EC8" />
+                        <Feather name="home" size={20} color="#1A365D" />
                     </TouchableOpacity>
                     <View style={styles.logoContainer}>
+                        <View style={styles.logoImageContainer}>
+                            <Image 
+                                source={require("../../../assets/enercon-icon.png")} 
+                                style={styles.logoImage} 
+                                resizeMode="contain" 
+                            />
+                        </View>
                         <Text style={styles.logoText}>FROTA</Text>
+                        <Text style={styles.logoSubtext}>Enercon - Energia e Assessoria</Text>
+                        <View style={styles.logoUnderline} />
                     </View>
                 </View>
-            </View>
+            </LinearGradient>
 
             {showScannerGlobal ? (
                 <View style={styles.qrCodeScannerContainer}>

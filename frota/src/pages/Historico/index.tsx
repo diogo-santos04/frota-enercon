@@ -7,6 +7,8 @@ import { StackParamsList } from "../../routes/app.routes";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from "./styles";
 import { AuthContext } from "../../contexts/AuthContext";
+import { LinearGradient } from "expo-linear-gradient";
+import { Image } from "react-native";
 
 interface Profissional {
     user_id: number;
@@ -117,7 +119,7 @@ export default function Historico() {
                 <View style={styles.cardGradient}>
                     <View style={styles.viagemHeader}>
                         <View style={styles.routeContainer}>
-                            <FontAwesome5 name="route" size={16} color="#E3F2FD" style={styles.icon} />
+                            <FontAwesome5 name="route" size={16} color="#FFFFFF"  />
                             <Text style={styles.routeText}>
                                 {item.local_saida} → {item.local_destino}
                             </Text>
@@ -212,28 +214,42 @@ export default function Historico() {
 
     return (
         <SafeAreaView style={styles.safeArea}>
-            <StatusBar barStyle="light-content" backgroundColor="#101026" />
+            <StatusBar barStyle="light-content" backgroundColor="#1B1B1B" />
             <View style={styles.container}>
-                <View style={styles.header}>
+                <LinearGradient 
+                    colors={["#1B1B1B", "#2A2A2A", "#1A365D"]} 
+                    style={styles.header} 
+                    start={{ x: 0, y: 0 }} 
+                    end={{ x: 1, y: 1 }}
+                >
                     <View style={styles.headerContent}>
                         <TouchableOpacity
                             style={styles.homeButton}
-                            onPress={() => {
-                                navigation.navigate("Menu");
-                            }}
+                            onPress={() => navigation.navigate("Menu")}
                         >
-                            <Feather name="home" size={20} color="#0B7EC8" />
+                            <Feather name="home" size={20} color="#1A365D" />
                         </TouchableOpacity>
                         <View style={styles.logoContainer}>
+                            <View style={styles.logoImageContainer}>
+                                <Image 
+                                    source={require("../../../assets/enercon-icon.png")} 
+                                    style={styles.logoImage} 
+                                    resizeMode="contain" 
+                                />
+                            </View>
                             <Text style={styles.logoText}>FROTA</Text>
+                            <Text style={styles.logoSubtext}>Enercon - Energia e Assessoria</Text>
+                            <View style={styles.logoUnderline} />
                         </View>
                     </View>
-                </View>
+                </LinearGradient>
 
                 <View style={styles.mainContent}>
                     <View style={styles.welcomeSection}>
                         <Text style={styles.sectionTitle}>Histórico de Viagens</Text>
-                        <Text style={styles.sectionSubtitle}>Visualize o histórico completo das viagens realizadas</Text>
+                        <Text style={styles.sectionSubtitle}>
+                            Visualize o histórico completo das viagens realizadas
+                        </Text>
                     </View>
                     {loading ? (
                         <LoadingComponent />
